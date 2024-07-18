@@ -79,10 +79,11 @@ public class FibonacciNumbers extends JFrame
          {
             public void actionPerformed(ActionEvent event)
             {
+               if (count >= 1) {
                // calculate the Fibonacci number after n2
                long temp = n2 - n1;
-               n1 = n2;
-               n2 = temp;
+               n2 = n1;
+               n1 = temp;
                --count;
 
                // display the next Fibonacci number
@@ -90,6 +91,7 @@ public class FibonacciNumbers extends JFrame
                nFibonacciJLabel.setText(String.valueOf(n2));
             }
          } // end anonymous inner class
+      }
       ); // end call to addActionListener
       eventThreadJPanel.add(previousNumberJButton);
 
