@@ -1,245 +1,249 @@
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
 
 public class EditarCadastro extends JFrame {
     private final JTextField idJTextField = new JTextField();
     private final JTextField nomeJTextField = new JTextField();
     private final JTextField emailJTextField = new JTextField();
-    private final JPasswordField senhaJPasswordField = new JPasswordField();
+    private final JTextField senhaJPasswordField = new JTextField();
     private final JButton updateJButton = new JButton("^");
     private final JButton nextJButton = new JButton(">");
-    private final JButton cleanJButton = new JButton("Limpar área");
+    private final JButton CleanJButton = new JButton("Limpar área");
     private final JButton previousJButton = new JButton("<");
-    private final JButton deleteJButton = new JButton("Deletar registro");
+    private final JButton deleteJButton = new JButton("delete register");
     private final JButton firstJButton = new JButton("<<");
     private final JButton lastJButton = new JButton(">>");
-    private final JButton criarJButton = new JButton("Criar registro");
+    private final JButton criarJButton = new JButton("criar registro");
+    private final JButton PesquisarJButton = new JButton("Pesquisar");
     private final JLabel idJLabel = new JLabel("Id:");
     private final JLabel nomeJLabel = new JLabel("Digite um nome:");
     private final JLabel emailJLabel = new JLabel("Digite um email:");
     private final JLabel senhaJLabel = new JLabel("Digite uma senha:");
     private final JLabel notificacaoJLabel = new JLabel("Status atual");
-
+    private final JLabel espacadorLabel = new JLabel("");
+    private final JLabel espacador2Label = new JLabel("");
+    private final JLabel espacador3Label = new JLabel("");
+    private final JLabel espacador4Label = new JLabel("");
+    private final JLabel espacador5Label = new JLabel("");
+    private final JLabel espacador6Label = new JLabel("");
+    private final JLabel espacador7Label = new JLabel("");
+    
     public EditarCadastro() {
         super("Cadastrar");
-        setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5);
-        gbc.anchor = GridBagConstraints.WEST;
+        setLayout(new GridLayout(6, 4, 10, 10));
 
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        add(idJLabel, gbc);
+        firstJButton.addActionListener(
+            new ActionListener() {
+                public void actionPerformed(ActionEvent event) {
+                    String[] resultado;
+                    try {
+                        resultado = NavegadorDeRegistro.firstRegistro("db_teste", "tbl_teste");
+                        notificacaoJLabel.setText("Primeiro registro");
+                        idJTextField.setText(resultado[0]);
+                        nomeJTextField.setText(resultado[1]);
+                        emailJTextField.setText(resultado[2]);
+                        senhaJPasswordField.setText(resultado[3]);
+                        updateJButton.setEnabled(true);
+                        firstJButton.setEnabled(false);
+                        previousJButton.setEnabled(false);
+                        lastJButton.setEnabled(true);
+                        nextJButton.setEnabled(true);
+                        deleteJButton.setEnabled(true);
+                    } catch (Exception e) {
+                        System.out.println("Ops! Ocorreu um erro ao posicionar o primeiro registro. Erro: " + e);
+                    }
+                }
+            }
+        );
 
-        gbc.gridx = 1;
-        gbc.gridwidth = 2;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        idJTextField.setColumns(15);
-        add(idJTextField, gbc);
+        nextJButton.addActionListener(
+            new ActionListener() {
+                public void actionPerformed(ActionEvent event) {
+                    String[] resultado;
+                    try {
+                        resultado = NavegadorDeRegistro.nextRegistro("db_teste", "tbl_teste", idJTextField.getText());
+                        notificacaoJLabel.setText("Próximo registro");
+                        idJTextField.setText(resultado[0]);
+                        nomeJTextField.setText(resultado[1]);
+                        emailJTextField.setText(resultado[2]);
+                        senhaJPasswordField.setText(resultado[3]);
+                        updateJButton.setEnabled(true);
+                        firstJButton.setEnabled(true);
+                        previousJButton.setEnabled(true);
+                        lastJButton.setEnabled(true);
+                        nextJButton.setEnabled(true);
+                        deleteJButton.setEnabled(true);
+                    } catch (Exception e) {
+                        System.out.println("Ops! Ocorreu um erro ao posicionar o próximo registro. Erro: " + e);
+                    }
+                }
+            }
+        );
+
+        previousJButton.addActionListener(
+            new ActionListener() {
+                public void actionPerformed(ActionEvent event) {
+                    String[] resultado;
+                    try {
+                        resultado = NavegadorDeRegistro.previousRegistro("db_teste", "tbl_teste", idJTextField.getText());
+                        notificacaoJLabel.setText("Registro Anterior");
+                        idJTextField.setText(resultado[0]);
+                        nomeJTextField.setText(resultado[1]);
+                        emailJTextField.setText(resultado[2]);
+                        senhaJPasswordField.setText(resultado[3]);
+                        updateJButton.setEnabled(true);
+                        firstJButton.setEnabled(true);
+                        previousJButton.setEnabled(true);
+                        lastJButton.setEnabled(true);
+                        nextJButton.setEnabled(true);
+                        deleteJButton.setEnabled(true);
+                    } catch (Exception e) {
+                        System.out.println("Ops! Ocorreu um erro ao posicionar o registro anterior. Erro: " + e);
+                    }
+                }
+            }
+        );
+
+        deleteJButton.addActionListener(
+            new ActionListener() {
+                public void actionPerformed(ActionEvent event) {
+                    String nome;
+                    String email;
+                    String senha;
+                    try {
+                        nome = nomeJTextField.getText();
+                        email = emailJTextField.getText();
+                        senha = senhaJPasswordField.getText();
+                        NavegadorDeRegistro.deleteRegistro("db_teste", "tbl_teste", "nome", "email", "senha", nome, email, senha);
+                        deleteJButton.setEnabled(true);
+                    } catch (Exception e) {
+                        System.out.println("Ops! Ocorreu um erro ao deletar o registro. Erro: " + e);
+                    }
+                }
+            }
+        );
+
+        criarJButton.addActionListener(
+            new ActionListener() {
+                public void actionPerformed(ActionEvent event) {
+                    String nome = nomeJTextField.getText();
+                    String email = emailJTextField.getText();
+                    String senha = senhaJPasswordField.getText();
+                    try {
+                        InserirRegistro.cadastrar("db_teste", "tbl_teste", "nome", "email", "senha", nome, email, senha);
+                        deleteJButton.setEnabled(true);
+                    } catch (NumberFormatException ex) {
+                    }
+                }
+            }
+        );
+
+        updateJButton.addActionListener(
+            new ActionListener() {
+                public void actionPerformed(ActionEvent event) {
+                    String nome;
+                    String email;
+                    String senha;
+                    String id;
+                    try {
+                        nome = nomeJTextField.getText();
+                        email = emailJTextField.getText();
+                        senha = senhaJPasswordField.getText();
+                        id = idJTextField.getText();
+                        NavegadorDeRegistro.updateRegistro("db_teste", "tbl_teste", nome, email, senha, id);
+                        deleteJButton.setEnabled(true);
+                    } catch (Exception e) {
+                        System.out.println("Ops! Ocorreu um erro ao atualizar o registro. Erro: " + e);
+                    }
+                }
+            }
+        );
+
+        lastJButton.addActionListener(
+            new ActionListener() {
+                public void actionPerformed(ActionEvent event) {
+                    String[] resultado;
+                    try {
+                        resultado = NavegadorDeRegistro.lastRegistro("db_teste", "tbl_teste");
+                        notificacaoJLabel.setText("Último registro");
+                        idJTextField.setText(resultado[0]);
+                        nomeJTextField.setText(resultado[1]);
+                        emailJTextField.setText(resultado[2]);
+                        senhaJPasswordField.setText(resultado[3]);
+                        updateJButton.setEnabled(true);
+                        firstJButton.setEnabled(true);
+                        previousJButton.setEnabled(true);
+                        lastJButton.setEnabled(false);
+                        nextJButton.setEnabled(false);
+                        deleteJButton.setEnabled(true);
+                    } catch (Exception e) {
+                        System.out.println("Ops! Ocorreu um erro ao posicionar o último registro. Erro: " + e);
+                    }
+                }
+            }
+        );
+
+        CleanJButton.addActionListener(
+            new ActionListener() {
+                public void actionPerformed(ActionEvent event) {
+                    try {
+                        String[] resultado = NavegadorDeRegistro.LimparRegistro();
+                        idJTextField.setText(resultado[0]);
+                        nomeJTextField.setText(resultado[1]);
+                        emailJTextField.setText(resultado[2]);
+                        senhaJPasswordField.setText(resultado[3]);
+                        updateJButton.setEnabled(false);
+                        firstJButton.setEnabled(true);
+                        previousJButton.setEnabled(false);
+                        lastJButton.setEnabled(true);
+                        nextJButton.setEnabled(false);
+                        deleteJButton.setEnabled(false);
+                        notificacaoJLabel.setText("Área de registros limpa");
+                    } catch (Exception e) {
+                        System.out.println("Ops! Ocorreu um erro ao limpar a área de registros. Erro: " + e);
+                    }
+                }
+            }
+        );
+
+        add(idJLabel);
+        add(idJTextField);
+        add(updateJButton);
         idJTextField.setEditable(false);
+        add(espacadorLabel);
+        
+        add(nomeJLabel);
+        add(nomeJTextField);
+        add(espacador2Label);
+        add(espacador3Label);
+            
+        add(emailJLabel);
+        add(emailJTextField);
+        add(espacador4Label);
+        add(espacador5Label);
+            
+        add(senhaJLabel);
+        add(senhaJPasswordField);
+        add(espacador6Label);
+        add(espacador7Label);
 
-        gbc.gridx = 3;
-        gbc.gridwidth = 1;
-        add(updateJButton, gbc);
+        add(firstJButton);
+        add(previousJButton);
+        add(nextJButton);
+        add(lastJButton);
+        add(criarJButton);
+        add(deleteJButton);
+        add(CleanJButton);
 
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        add(nomeJLabel, gbc);
-
-        gbc.gridx = 1;
-        gbc.gridwidth = 3;
-        nomeJTextField.setColumns(25);
-        add(nomeJTextField, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        add(emailJLabel, gbc);
-
-        gbc.gridx = 1;
-        gbc.gridwidth = 3;
-        emailJTextField.setColumns(25);
-        add(emailJTextField, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        add(senhaJLabel, gbc);
-
-        gbc.gridx = 1;
-        gbc.gridwidth = 3;
-        senhaJPasswordField.setColumns(25);
-        add(senhaJPasswordField, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 4;
-        gbc.gridwidth = 1;
-        add(firstJButton, gbc);
-
-        gbc.gridx = 1;
-        add(previousJButton, gbc);
-
-        gbc.gridx = 2;
-        add(nextJButton, gbc);
-
-        gbc.gridx = 3;
-        add(lastJButton, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 5;
-        gbc.gridwidth = 1;
-        add(criarJButton, gbc);
-
-        gbc.gridx = 1;
-        add(deleteJButton, gbc);
-
-        gbc.gridx = 2;
-        add(cleanJButton, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 6;
-        gbc.gridwidth = 4;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        add(notificacaoJLabel, gbc);
-
-        for (int i = 0; i < 7; i++) {
-            JLabel spacer = new JLabel("");
-            add(spacer);
-        }
-
-        firstJButton.addActionListener(e -> firstButtonAction());
-        nextJButton.addActionListener(e -> nextButtonAction());
-        previousJButton.addActionListener(e -> previousButtonAction());
-        deleteJButton.addActionListener(e -> deleteButtonAction());
-        criarJButton.addActionListener(e -> criarButtonAction());
-        updateJButton.addActionListener(e -> updateButtonAction());
-        lastJButton.addActionListener(e -> lastButtonAction());
-        cleanJButton.addActionListener(e -> cleanButtonAction());
-
-        setSize(600, 350);
+        add(PesquisarJButton);
+        
+        setSize(600, 300);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
-
-    private void firstButtonAction() {
-        try {
-            String[] resultado = NavegadorDeRegistro.firstRegistro("db_teste", "tbl_teste");
-            atualizarCampos(resultado);
-            updateJButton.setEnabled(true);
-            firstJButton.setEnabled(false);
-            previousJButton.setEnabled(false);
-            lastJButton.setEnabled(true);
-            nextJButton.setEnabled(true);
-            notificacaoJLabel.setText("Primeiro registro");
-        } catch (Exception e) {
-            System.out.println("Erro ao posicionar o primeiro registro: " + e);
-        }
-    }
-
-    private void nextButtonAction() {
-        try {
-            String[] resultado = NavegadorDeRegistro.nextRegistro("db_teste", "tbl_teste", idJTextField.getText());
-            if (resultado != null) {
-                atualizarCampos(resultado);
-                updateJButton.setEnabled(true);
-                firstJButton.setEnabled(true);
-                previousJButton.setEnabled(true);
-                lastJButton.setEnabled(true);
-                nextJButton.setEnabled(true);
-                notificacaoJLabel.setText("Próximo registro");
-            } else {
-                notificacaoJLabel.setText("Nenhum próximo registro");
-            }
-        } catch (Exception e) {
-            System.out.println("Erro ao posicionar o próximo registro: " + e);
-        }
-    }
-
-    private void previousButtonAction() {
-        try {
-            String[] resultado = NavegadorDeRegistro.previousRegistro("db_teste", "tbl_teste", idJTextField.getText());
-            if (resultado != null) {
-                atualizarCampos(resultado);
-                updateJButton.setEnabled(true);
-                firstJButton.setEnabled(true);
-                previousJButton.setEnabled(true);
-                lastJButton.setEnabled(true);
-                nextJButton.setEnabled(true);
-                notificacaoJLabel.setText("Registro Anterior");
-            } else {
-                notificacaoJLabel.setText("Nenhum registro anterior");
-            }
-        } catch (Exception e) {
-            System.out.println("Erro ao posicionar o registro anterior: " + e);
-        }
-    }
-
-    private void deleteButtonAction() {
-        try {
-            NavegadorDeRegistro.deleteRegistro("db_teste", "tbl_teste", "nome", "email", "senha",
-                    nomeJTextField.getText(), emailJTextField.getText(), new String(senhaJPasswordField.getPassword()));
-            notificacaoJLabel.setText("Registro deletado");
-        } catch (Exception e) {
-            System.out.println("Erro ao deletar o registro: " + e);
-        }
-    }
-
-    private void criarButtonAction() {
-        try {
-            InserirRegistro.cadastrar("db_teste", "tbl_teste", "nome", "email", "senha",
-                    nomeJTextField.getText(), emailJTextField.getText(), new String(senhaJPasswordField.getPassword()));
-            notificacaoJLabel.setText("Registro criado");
-        } catch (Exception e) {
-            System.out.println("Erro ao criar registro: " + e);
-        }
-    }
-
-    private void updateButtonAction() {
-        try {
-            NavegadorDeRegistro.updateRegistro("db_teste", "tbl_teste",
-                    nomeJTextField.getText(), emailJTextField.getText(), new String(senhaJPasswordField.getPassword()), idJTextField.getText());
-            notificacaoJLabel.setText("Registro atualizado");
-        } catch (Exception e) {
-            System.out.println("Erro ao atualizar o registro: " + e);
-        }
-    }
-
-    private void lastButtonAction() {
-        try {
-            String[] resultado = NavegadorDeRegistro.lastRegistro("db_teste", "tbl_teste");
-            atualizarCampos(resultado);
-            updateJButton.setEnabled(true);
-            firstJButton.setEnabled(true);
-            previousJButton.setEnabled(true);
-            lastJButton.setEnabled(false);
-            nextJButton.setEnabled(false);
-            notificacaoJLabel.setText("Último registro");
-        } catch (Exception e) {
-            System.out.println("Erro ao posicionar o último registro: " + e);
-        }
-    }
-
-    private void cleanButtonAction() {
-        idJTextField.setText("");
-        nomeJTextField.setText("");
-        emailJTextField.setText("");
-        senhaJPasswordField.setText("");
-        updateJButton.setEnabled(false);
-        firstJButton.setEnabled(true);
-        previousJButton.setEnabled(false);
-        lastJButton.setEnabled(false);
-        nextJButton.setEnabled(true);
-        notificacaoJLabel.setText("Área de registros limpa");
-    }
-
-    private void atualizarCampos(String[] resultado) {
-        if (resultado != null) {
-            idJTextField.setText(resultado[0]);
-            nomeJTextField.setText(resultado[1]);
-            emailJTextField.setText(resultado[2]);
-            senhaJPasswordField.setText(resultado[3]);
-        }
-    }
-
+    
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(EditarCadastro::new);
+        new EditarCadastro();
     }
 }
